@@ -4,6 +4,14 @@
 var today = dayjs();
 var hour = today.$H;
 var currHour;
+var buttonParent;
+var saveData = function(hourID,data)
+{
+  this.hourID = hourID;
+  this.data = data;
+}
+var data;
+var saveDataList = [];
 console.log(today);
 console.log(hour);
 $('#currentDay').text(today); //imeddiatley shows time upon render
@@ -23,14 +31,24 @@ $(function () {
   // useful when saving the description in local storage?
   $("button").click(function(event)
   {
-    console.log("was clicked");
+    //get parent id 
+    buttonParent = $(this).parent().attr('id');
+    console.log(buttonParent);
+    //gets the text area value
+    var data = $(this).parent().children('.description').val();
+    console.log(data);
+
+    saveDataList.push(new saveData(buttonParent,data))
+    console.log(saveDataList);
+    localStorage.setItem("saved-data", saveDataList);
+    
   });
   // TODO: Add code to apply the past, present, or future class to each time
   // block by comparing the id to the current hour. HINTS: How can the id
   // attribute of each time-block be used to conditionally add or remove the
   // past, present, and future classes? How can Day.js be used to get the
   // current hour in 24-hour time?
-  
+  updateHour();
   
   // TODO: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
@@ -41,7 +59,7 @@ $(function () {
 
 function domCreate()
 {
-  for( var i = 0; i < 24; i++)
+  for( var i = 0; i < 24; i++) //for( var i = 9; i < 18; i++)
   {
     //create the hour block div
     var hourBlock = $("<div id = 'hour-" + i +"' class= 'row time-block'>");
@@ -49,13 +67,13 @@ function domCreate()
     var classes = '<div class="col-2 col-md-1 hour text-center py-3">';
     //create div with the hour label
     if(i === 0)
-      label = $(classes + 12 + 'AM</div>');
+      label = $(classes + 12 + ' AM</div>');
     else if ( i === 12)
-      label = $(classes + 12 + 'PM</div>');
+      label = $(classes + 12 + ' PM</div>');
     else if (i < 12)
-      label = $(classes + i + 'AM</div>');
+      label = $(classes + i + ' AM</div>');
     else
-      label = $(classes + (i-12)+'PM</div>');
+      label = $(classes + (i-12)+' PM</div>');
     //add text area
     var textArea = $('<textarea class="col-8 col-md-10 description" rows="3">');
     //add button
@@ -68,11 +86,9 @@ function domCreate()
     $("#hour-"+i).append(label);
     $("#hour-"+i).append(textArea);
     $("#hour-"+i).append(button);
-
-    
-      
+ 
   }
-  updateHour();
+  
   //append icon outside or the icon would appear 12 times
   $("button").append(saveIcon);
 }
@@ -94,30 +110,26 @@ function timeCounter()
           // $("#schedule").children().remove();
           // domCreate();
         }
-          
-              
     },1000 );
 }
 
 function updateHour()
 {
   // check if it is past, present or future and add color accordingliy
-  var grey = '#d3d3d3';
-  var red = '#ff6961';
-  var green = '#77dd77';
-  
-  console.log("Hour in function: " +hour);
+  console.log("Hour in function: " + hour);
   for( var i = 0; i < 24; i++)
   {
-    textArea = $("#hour-"+i).children("description");
+    //remove the previous classses
+    $("#hour-"+i).removeClass("past");
+    $("#hour-"+i).removeClass("present");
+    $("#hour-"+i).removeClass("future");
+    //add the current classes
     if(hour === i)
       $("#hour-"+i).addClass("present");
     else if(hour > i) 
       $("#hour-"+ i).addClass("past");
     else
       $("#hour-"+ i).addClass("future");
-
   }
-
 }
 
