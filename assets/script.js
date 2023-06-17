@@ -20,7 +20,6 @@ $(function () {
   // TODO: Add code to display the current date in the header of the page.
   timeCounter();
   //create the dom
-  console.log("before the dom hour: " + currHour);
   domCreate();
   
   // TODO: Add a listener for click events on the save button. This code should
@@ -33,14 +32,17 @@ $(function () {
   {
     //get parent id 
     buttonParent = $(this).parent().attr('id');
-    console.log(buttonParent);
+    console.log("presssed " + buttonParent);
     //gets the text area value
     var data = $(this).parent().children('.description').val();
-    console.log(data);
-
-    saveDataList.push(new saveData(buttonParent,data))
-    console.log(saveDataList);
-    localStorage.setItem("saved-data", saveDataList);
+    saveDataList = JSON.parse(localStorage.getItem("saved-data"));
+    if(data != '')
+    {
+      saveDataList.push(new saveData(buttonParent,data));
+      console.log(saveDataList);
+      localStorage.setItem("saved-data", JSON.stringify(saveDataList));
+    }
+    
     
   });
   // TODO: Add code to apply the past, present, or future class to each time
@@ -53,7 +55,7 @@ $(function () {
   // TODO: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
-  
+  showSavedItems();
   
 });
 
@@ -88,8 +90,7 @@ function domCreate()
     $("#hour-"+i).append(button);
  
   }
-  
-  //append icon outside or the icon would appear 12 times
+  //append icon outside or the icon would appear 12 times for wach button
   $("button").append(saveIcon);
 }
 
@@ -102,13 +103,11 @@ function timeCounter()
 
         //if hour changes update dom to reflect hour change
         currHour = today.$H;
-        console.log("this hour is: "+ currHour);
+        //console.log("this hour is: "+ currHour);
         if(hour != currHour)
         {
           hour = currHour;
           updateHour();
-          // $("#schedule").children().remove();
-          // domCreate();
         }
     },1000 );
 }
@@ -116,7 +115,6 @@ function timeCounter()
 function updateHour()
 {
   // check if it is past, present or future and add color accordingliy
-  console.log("Hour in function: " + hour);
   for( var i = 0; i < 24; i++)
   {
     //remove the previous classses
@@ -133,3 +131,13 @@ function updateHour()
   }
 }
 
+function showSavedItems()
+{
+  var getStorage = JSON.parse(localStorage.getItem("saved-data"));
+  console.log(getStorage);
+  for (var i= 0; i < getStorage.length; i++)
+  {
+    var curr = getStorage[i];
+    $('#'+curr.hourID).children('.description').val(curr.data);
+  }
+}
