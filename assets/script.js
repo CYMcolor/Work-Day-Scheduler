@@ -13,12 +13,30 @@ $(function () {
   // function? How can DOM traversal be used to get the "hour-x" id of the
   // time-block containing the button that was clicked? How might the id be
   // useful when saving the description in local storage?
+  $(".saveBtn").click(function(event)
+  {
+    event.stopPropgation();
+    //event.StopImmediatePropagation();
+    console.log("was clicked");
+  });
   
   // TODO: Add code to apply the past, present, or future class to each time
   // block by comparing the id to the current hour. HINTS: How can the id
   // attribute of each time-block be used to conditionally add or remove the
   // past, present, and future classes? How can Day.js be used to get the
   // current hour in 24-hour time?
+  domCreate();
+  
+  // TODO: Add code to get any user input that was saved in localStorage and set
+  // the values of the corresponding textarea elements. HINT: How can the id
+  // attribute of each time-block be used to do this?
+  
+  // TODO: Add code to display the current date in the header of the page.
+  timeCounter();
+});
+
+function domCreate()
+{
   for( var i = 0; i < 24; i++)
   {
     //create the hour block div
@@ -47,31 +65,38 @@ $(function () {
     $("#hour-"+i).append(textArea);
     $("#hour-"+i).append(button);
 
-    // check if it is past present or future
+    // check if it is past, present or future and add color accordingliy
+    var grey = '#d3d3d3';
+    var red = '#ff6961';
+    var green = '#77dd77';
     if(hour === i)
     {
       $("#hour-"+i).addClass("present");
-      textArea.css('background-color', '#ff6961');
+      textArea.css({'background-color': red, 'color': 'white'}); 
     } 
     else if(hour > i) 
     {
       $("#hour-"+ i).addClass("past");
-      textArea.css('background-color', '#d3d3d3');
+      textArea.css({'background-color': grey, 'color': 'white'});
     }
     else
     {
       $("#hour-"+ i).addClass("future");
-      textArea.css('background-color', '#77dd77');
+      textArea.css({'background-color': green, 'color': 'white'});
     }
       
     
   }
   //append icon outside or the icon would appear 12 times
   $("button").append(saveIcon);
-  
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  
-  // TODO: Add code to display the current date in the header of the page.
-});
+}
+
+function timeCounter()
+{
+    var timeInterval = setInterval(function()
+    {
+        today = dayjs();
+        $('#currentDay').text(today);
+              
+    },1000 );
+}
