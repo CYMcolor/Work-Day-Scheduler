@@ -69,28 +69,10 @@ function domCreate()
     $("#hour-"+i).append(textArea);
     $("#hour-"+i).append(button);
 
-    // check if it is past, present or future and add color accordingliy
-    var grey = '#d3d3d3';
-    var red = '#ff6961';
-    var green = '#77dd77';
-    console.log("Hour in function: " +hour);
-    if(hour === i)
-    {
-      $("#hour-"+i).addClass("present");
-      textArea.css({'background-color': red, 'color': 'white'}); 
-    } 
-    else if(hour > i) 
-    {
-      $("#hour-"+ i).addClass("past");
-      textArea.css({'background-color': grey, 'color': 'white'});
-    }
-    else
-    {
-      $("#hour-"+ i).addClass("future");
-      textArea.css({'background-color': green, 'color': 'white'});
-    }
+    
       
   }
+  updateHour();
   //append icon outside or the icon would appear 12 times
   $("button").append(saveIcon);
 }
@@ -107,11 +89,35 @@ function timeCounter()
         console.log("this hour is: "+ currHour);
         if(hour != currHour)
         {
-          hour= currHour;
-          $("#schedule").children().remove();
-          domCreate();
+          hour = currHour;
+          updateHour();
+          // $("#schedule").children().remove();
+          // domCreate();
         }
           
               
     },1000 );
 }
+
+function updateHour()
+{
+  // check if it is past, present or future and add color accordingliy
+  var grey = '#d3d3d3';
+  var red = '#ff6961';
+  var green = '#77dd77';
+  
+  console.log("Hour in function: " +hour);
+  for( var i = 0; i < 24; i++)
+  {
+    textArea = $("#hour-"+i).children("description");
+    if(hour === i)
+      $("#hour-"+i).addClass("present");
+    else if(hour > i) 
+      $("#hour-"+ i).addClass("past");
+    else
+      $("#hour-"+ i).addClass("future");
+
+  }
+
+}
+
