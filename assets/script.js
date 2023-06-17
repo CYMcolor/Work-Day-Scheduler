@@ -22,7 +22,6 @@ $(function () {
   for( var i = 0; i < 24; i++)
   {
     //create the hour block div
-    
     var hourBlock = $("<div id = 'hour-" + i +"' class= 'row time-block'>");
     var label;
     var classes = '<div class="col-2 col-md-1 hour text-center py-3">';
@@ -47,6 +46,24 @@ $(function () {
     $("#hour-"+i).append(label);
     $("#hour-"+i).append(textArea);
     $("#hour-"+i).append(button);
+
+    // check if it is past present or future
+    if(hour === i)
+    {
+      $("#hour-"+i).addClass("present");
+      textArea.css('background-color', '#ff6961');
+    } 
+    else if(hour > i) 
+    {
+      $("#hour-"+ i).addClass("past");
+      textArea.css('background-color', '#d3d3d3');
+    }
+    else
+    {
+      $("#hour-"+ i).addClass("future");
+      textArea.css('background-color', '#77dd77');
+    }
+      
     
   }
   //append icon outside or the icon would appear 12 times
