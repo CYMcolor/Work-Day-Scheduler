@@ -2,6 +2,7 @@
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
 var today = dayjs();
+var day = today.$D; 
 var hour = today.$H;
 var currHour;
 var buttonParent;
@@ -24,10 +25,7 @@ $(function () {
   
   // TODO: Add a listener for click events on the save button. This code should
   // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
+  // local storage.
   $("button").click(function(event)
   {
     //get parent id 
@@ -35,7 +33,14 @@ $(function () {
     console.log("presssed " + buttonParent);
     //gets the text area value
     var data = $(this).parent().children('.description').val();
-    saveDataList = JSON.parse(localStorage.getItem("saved-data"));
+    //get previsouly saved items
+    if (localStorage.getItem('saved-data') !== null) 
+    {
+      saveDataList = JSON.parse(localStorage.getItem("saved-data"));
+    }
+    
+    console.log(saveDataList);
+    //adds new item if save data isnt empty
     if(data != '')
     {
       saveDataList.push(new saveData(buttonParent,data));
@@ -43,19 +48,18 @@ $(function () {
       localStorage.setItem("saved-data", JSON.stringify(saveDataList));
     }
     
-    
   });
   // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
+  // block by comparing the id to the current hour.
   updateHour();
   
   // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  showSavedItems();
+  // the values of the corresponding textarea elements.
+  if (localStorage.getItem('saved-data') !== null) 
+  {
+    showSavedItems();
+  }
+  
   
 });
 
@@ -103,11 +107,19 @@ function timeCounter()
 
         //if hour changes update dom to reflect hour change
         currHour = today.$H;
-        //console.log("this hour is: "+ currHour);
-        if(hour != currHour)
+        currDay = today.$D;
+
+        //updates the classes if the hour has changed
+        if(hour !== currHour)
         {
           hour = currHour;
           updateHour();
+        }
+
+        //clears the day if day changed
+        if(day !== currDay)
+        {
+          saveDataList = [];
         }
     },1000 );
 }
@@ -133,6 +145,8 @@ function updateHour()
 
 function showSavedItems()
 {
+  if (localStorage.getItem('saved-data') !== null) 
+  {
   var getStorage = JSON.parse(localStorage.getItem("saved-data"));
   console.log(getStorage);
   for (var i= 0; i < getStorage.length; i++)
@@ -140,4 +154,5 @@ function showSavedItems()
     var curr = getStorage[i];
     $('#'+curr.hourID).children('.description').val(curr.data);
   }
+}
 }
