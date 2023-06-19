@@ -2,7 +2,6 @@
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
 var today = dayjs();
-var day = today.$D; 
 var hour = today.$H;
 var currHour;
 var buttonParent;
@@ -26,7 +25,7 @@ $(function () {
   // TODO: Add a listener for click events on the save button. This code should
   // use the id in the containing time-block as a key to save the user input in
   // local storage.
-  $("button").click(function(event)
+  $(".saveBtn").click(function(event)
   {
     //get parent id 
     buttonParent = $(this).parent().attr('id');
@@ -60,12 +59,19 @@ $(function () {
     showSavedItems();
   }
   
+  //clear the schedule button
+  $(".clearBtn").click(function(event)
+  {
+    localStorage.clear("saved-data");
+    $(".description").val('');
+    
+  });
   
 });
 
 function domCreate()
 {
-  for( var i = 0; i < 24; i++) //for( var i = 9; i < 18; i++)
+  for( var i = 9; i < 18; i++) //for( var i = 9; i < 18; i++)
   {
     //create the hour block div
     var hourBlock = $("<div id = 'hour-" + i +"' class= 'row time-block'>");
@@ -95,7 +101,7 @@ function domCreate()
  
   }
   //append icon outside or the icon would appear 12 times for wach button
-  $("button").append(saveIcon);
+  $(".saveBtn").append(saveIcon);
 }
 
 function timeCounter()
@@ -107,7 +113,6 @@ function timeCounter()
 
         //if hour changes update dom to reflect hour change
         currHour = today.$H;
-        currDay = today.$D;
 
         //updates the classes if the hour has changed
         if(hour !== currHour)
@@ -116,11 +121,6 @@ function timeCounter()
           updateHour();
         }
 
-        //clears the day if day changed
-        if(day !== currDay)
-        {
-          saveDataList = [];
-        }
     },1000 );
 }
 
