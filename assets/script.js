@@ -1,8 +1,35 @@
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
+
 var today = dayjs();
 var hour = today.$H;
+var day, month, year, min, sec , clock;
+function setClock()
+{
+  hour = today.$H;
+  min = today.$m;
+  sec = today.$s;
+  var newHour = hour; // so it won't mess with time blcks 
+
+  //adjust for am and pm stuff
+  if(hour ===  0 || hour ==12)
+    newHour = 12;
+  if(hour >  12 )
+    newHour -= 12;
+
+  // if single digit add a 0 before
+  if(newHour < 10)
+    newHour = '0' + newHour;
+  if(min<10)
+    min = '0' + min;
+  if(sec < 10)
+    sec = '0' + sec;
+  //display  the clock
+  clock =  newHour + ':' + min + ':' + sec;
+}
+
+
 var currHour;
 var buttonParent;
 var saveData = function(hourID,data)
@@ -14,7 +41,9 @@ var data;
 var saveDataList = [];
 console.log(today);
 console.log(hour);
-$('#currentDay').text(today); //imeddiatley shows time upon render
+
+setClock();
+$('#currentDay').text(today.format('DD MMMM YYYY, ')+ clock); //imeddiatley shows time upon render
 
 $(function () {
   // TODO: Add code to display the current date in the header of the page.
@@ -109,7 +138,8 @@ function timeCounter()
     var timeInterval = setInterval(function()
     {
         today = dayjs();
-        $('#currentDay').text(today);
+        setClock();
+        $('#currentDay').text(today.format('DD MMMM YYYY, ') + clock);
 
         //if hour changes update dom to reflect hour change
         currHour = today.$H;
